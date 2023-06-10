@@ -9,6 +9,7 @@ const env = process.env.NODE_ENV || 'development';
 const config = require('../../config/db-config.json')[env];
 const db = {};
 
+// Create a  Sequelize instance based on the configuration file
 let sequelize;
 if (config.use_env_variable) {
   sequelize = new Sequelize(process.env[config.use_env_variable], config);
@@ -21,6 +22,7 @@ if (config.use_env_variable) {
   );
 }
 
+// Load all Sequeilize model file in the `models` directory and add them to the `db` object
 fs.readdirSync(__dirname)
   .filter((file) => {
     return (
@@ -38,12 +40,20 @@ fs.readdirSync(__dirname)
     db[model.name] = model;
   });
 
+// Call the `associate`function for each model, if it exists
 Object.keys(db).forEach((modelName) => {
   if (db[modelName].associate) {
     db[modelName].associate(db);
   }
 });
 
-db.sequelize = sequelize;
+/**
+ * The `db` object contains Sequilze models for this application.
+ * @typedef {Object} db
+ * @property {Sequelize} sequelize - The Sequelize instance.
+ * @property {Object.<string, Model>} - The sequelize models.
+ */
 
+// Add the Sequelize instance to the `db` and export it
+db.sequelize = sequelize;
 module.exports = db;
