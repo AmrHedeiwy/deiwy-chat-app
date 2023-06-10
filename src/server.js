@@ -3,7 +3,7 @@ const socketio = require('socket.io');
 const http = require('http');
 const path = require('path');
 
-const { sequelize } = require('./api/models');
+const { sequelize, User } = require('./api/models');
 
 const app = express();
 const server = http.createServer(app);
@@ -17,7 +17,21 @@ io.on('connection', (socket) => {
 });
 
 async function main() {
-  sequelize.sync({ force: true });
+  await sequelize.sync({ force: true });
+  await User.create({
+    Firstname: 'amr',
+    Lastname: 'hedeiwy',
+    Username: 'Emna',
+    Email: 'amr.hedeiwy@gmail.com',
+    Password: 'asA21@sdssaas',
+  })
+    .then((user) => {
+      console.log('User created:', user.toJSON());
+    })
+    .catch((error) => {
+      console.error('Error creating user:', error.message);
+      console.error('Validation errors:', error.errors);
+    });
 }
 main().then(() => {
   server.listen(3000, () => {
