@@ -1,7 +1,7 @@
 const { Model } = require('sequelize');
-const hooks = require('../services/hooks');
 
 /**
+ * @module user
  * This module defines the User model for the application, 
    which is used to store information about registered users.
  * @typedef {Object} User
@@ -90,6 +90,7 @@ module.exports = (sequelize, DataTypes) => {
               'Please enter a valid email address' +
               'in the format example@example.com.',
           },
+          isLowercase: true,
         },
       },
       Password: {
@@ -111,7 +112,6 @@ module.exports = (sequelize, DataTypes) => {
       sequelize,
       modelName: 'User',
       tableName: 'users',
-      hooks,
     }
   );
 

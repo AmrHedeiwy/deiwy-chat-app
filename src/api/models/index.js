@@ -38,6 +38,18 @@ fs.readdirSync(__dirname)
       Sequelize.DataTypes
     );
     db[model.name] = model;
+
+    // Load hooks for this model, if they exist
+    const hooksPath = path.join(
+      __dirname,
+      'hooks',
+      `${model.name.toLowerCase()}Hooks.js`
+    );
+
+    if (fs.existsSync(hooksPath)) {
+      const hooks = require(hooksPath);
+      hooks(model);
+    }
   });
 
 // Call the `associate`function for each model, if it exists
