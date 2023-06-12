@@ -9,10 +9,14 @@ const bcrypt = require('bcrypt');
 module.exports = (User) => {
   /**
    * Generates a unique user key based on the user's username
-     and a 4-digit UUID.
-   * @param {import('../models').User} user - The user model instance containing
-     the Username property
-   * @property {string} Userkey - The user's key.
+   * and a 4-digit UUID.
+   * @example 'Emna#1636'
+   *
+   * @param {import('../models').User} user - The User model instance.
+   *
+   * The following properties used from the User model:
+   * @property {string} Username - The user's Username.
+   * @property {string} Userkey - The user's Userkey.
    */
   User.beforeValidate((user) => {
     const username = user.Username;
@@ -22,9 +26,13 @@ module.exports = (User) => {
 
   /**
    * Converts the user's email to lowercase
-   to keep consistant format.
-   * @param {import('../models/users').User} user - The user model instance
-   containing the Email property.
+   * to keep consistant format.
+   * @example 'example@example.com'
+   *
+   * @param {import('../models/users').User} user - The User model instance.
+   *
+   * The following properties used from the User model:
+   * @property {string} Email - The user's email.
    */
   User.beforeValidate((user) => {
     if (user.Email) {
@@ -34,9 +42,11 @@ module.exports = (User) => {
 
   /**
    * Hashes the users's plain text password using bcrypt.
-   * @param {import('../models/users').User} user - The user model instance
-     containing the Password property.
-   * @property {string} Password - The user's plain text password.
+   *
+   * @param {import('../models/users').User} user - The User model instance.
+   *
+   * The following properties used from the User model:
+   * @property {string} Password - The user's password.
    */
   User.beforeCreate(async (user) => {
     const password = user.Password;
@@ -46,8 +56,11 @@ module.exports = (User) => {
 
   /**
    * Send welcome message to the user's email.
-   * @param {import('../models/users').User} user - The user model instance
-     containing the Email property.
+   *
+   * @param {import('../models/users').User} user - The User model instance.
+   *
+   * The following properties used from the User model:
+   * @property {string} Email - The user's email.
    */
   User.afterCreate((user) => {
     const email = user.Email;

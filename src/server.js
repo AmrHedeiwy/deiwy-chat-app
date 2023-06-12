@@ -14,7 +14,7 @@ const path = require('path');
 const port = process.env.PORT || 3000;
 
 // Importing database models
-const { sequelize, User } = require('./api/models');
+const { sequelize } = require('./api/models');
 
 /**
  * Creates an Express app with Socket.IO support and serves static files from the public directory.
@@ -23,13 +23,16 @@ const app = express();
 const server = http.createServer(app);
 const io = socketio(server);
 const public = path.join(__dirname, '../public');
-app.use(express.static(public));
+// app.use(express.static(public));
+app.use(express.json());
+const routes = require('./api/routes/index');
+app.use('/', routes);
+// io.on('connection', (socket) => {
+//   socket.emit('message', `User with socketID ${socket.id} has joined`);
+// });
 
-// Code bellow just for testing (Remove later)
-io.on('connection', (socket) => {
-  socket.emit('message', `User with socketID ${socket.id} has joined`);
-});
-// Code above just for testing (Remove later)
+const errorMiddleware = require('./api/middlewares/error.middleware');
+app.use(errorMiddleware);
 
 /**
  * Sets up the database and starts the server.
@@ -37,22 +40,6 @@ io.on('connection', (socket) => {
  */
 async function main() {
   await sequelize.sync({ force: true });
-  // Code bellow just for testing (Remove later)
-  await User.create({
-    Firstname: 'amr',
-    Lastname: 'hedeiwy',
-    Username: 'Emna',
-    Email: 'amr.hedeiwy@gmail.com',
-    Password: 'asA21@sdssaas',
-  })
-    .then((user) => {
-      console.log('User created:', user.toJSON());
-    })
-    .catch((error) => {
-      console.error('Error creating user:', error.message);
-      console.error('Validation errors:', error.errors);
-    });
-  // Code above just for testing (Remove later)
 
   // Start the server and listen on port
   server.listen(port, () => {
