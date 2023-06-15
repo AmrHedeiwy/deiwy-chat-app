@@ -1,5 +1,5 @@
 const { User } = require('../models/index');
-const successMessages = require('../../config/success-messages.json');
+const successMessages = require('../../config/success.json');
 
 /**
  * Creates a new user using the user's register credentials.
@@ -24,11 +24,21 @@ const createUser = async (data) => {
   try {
     await User.create(data);
     return {
-      status: 201,
-      message: successMessages.create_user
+      status: successMessages.create_user.code,
+      message: successMessages.create_user.message
     };
   } catch (err) {
-    return { error: err };
+    /**
+     * Some Sequelize errors include the words "Sequelize" and "Unique" in the error name.
+     * This line of code removes those words to make the error name consistent
+     * throught the whole program.
+     *
+     * For example:
+     * - SequelizeValidationError --> ValidationError
+     * - SequelizeUniqueConstraintError --> ConstraintError
+     */
+    err.name = err.name.replace('Sequelize', '').replace('Unique', '');
+    return { error: { type: err.name, field: err.errors[0].path, info: err } };
   }
 };
 

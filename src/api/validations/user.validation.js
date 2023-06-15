@@ -19,27 +19,25 @@
  */
 
 const yup = require('yup');
-const errorMessages = require('../../config/error-messages.json');
 
 const userSchema = yup.object({
   Firstname: yup
     .string()
-    .matches(/^[A-Za-z]{2,30}$/, errorMessages.validations.Firstname)
+    .matches(/^[A-Za-z]{2,30}$/)
     .required(),
   Lastname: yup
     .string()
-    .matches(/^[A-Za-z]{2,30}$/, errorMessages.validations.Lastname)
+    .matches(/^[A-Za-z]{2,30}$/)
     .required(),
   Username: yup
     .string()
-    .matches(/^[A-Za-z\d_-]{3,20}$/, errorMessages.validations.Username)
+    .matches(/^[A-Za-z\d_-]{3,20}$/)
     .required(),
-  Email: yup.string().email(errorMessages.validations.Email).required('error'),
+  Email: yup.string().email().required('error'),
   Password: yup
     .string()
     .matches(
-      /^(?=.*[A-Z])(?=.*[a-z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/,
-      errorMessages.validations.Password
+      /^(?=.*[A-Z])(?=.*[a-z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/
     )
 });
 

@@ -1,4 +1,8 @@
-const errorMessages = require('../../config/error-messages.json');
+// Loading the validation, contraint, and server errors from errors.json file
+const errorsJSON = require('../../config/errors.json');
+const validationErrors = errorsJSON.validations;
+const constraintErrors = errorsJSON.constraints;
+const serverErrors = errorsJSON.server;
 
 /**
  * Decides which middleware validation to run
@@ -12,12 +16,12 @@ const errorMessages = require('../../config/error-messages.json');
  * @param {Function} next - The next middleware in the chain.
  */
 const errorMiddleware = (error, req, res, next) => {
-  switch (error.name) {
-    case 'SequelizeValidationError':
+  switch (error.type) {
+    case 'ValidationError':
       validationError(error, req, res, next);
       break;
 
-    case 'SequelizeUniqueConstraintError':
+    case 'ConstraintError':
       constraintError(error, req, res, next);
       break;
     default:
@@ -37,8 +41,8 @@ const errorMiddleware = (error, req, res, next) => {
  * @param {Function} next - The next middleware in the chain.
  */
 async function validationError(error, req, res, next) {
-  const fieldName = error.errors[0].path;
-  const errorMessage = errorMessages.validations[fieldName];
+  const fieldName = error.field;
+  const errorMessage = validationErrors.messages[fieldName];
   res.status(400).json({ field: fieldName, message: errorMessage });
 }
 
@@ -53,8 +57,8 @@ async function validationError(error, req, res, next) {
  * @param {Function} next - The next middleware in the chain.
  */
 async function constraintError(error, req, res, next) {
-  const fieldName = error.errors[0].path;
-  const errorMessage = errorMessages.constraints[fieldName];
+  const fieldName = error.field;
+  const errorMessage = constraintErrors.messages[fieldName];
   res.status(409).json({ field: fieldName, message: errorMessage });
 }
 
@@ -68,8 +72,8 @@ async function constraintError(error, req, res, next) {
  */
 async function serverError(error, req, res, next) {
   // Logging the error to the server stack
-  console.error(error.stack);
-  const errorMessage = errorMessages.server;
+  console.error(error.info.stack);
+  const errorMessage = serverErrors.message;
   res.status(500).json({ message: errorMessage });
 }
 

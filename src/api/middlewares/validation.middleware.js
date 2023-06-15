@@ -18,10 +18,10 @@
 const validation = (schema) => async (req, res, next) => {
   const body = req.body;
   try {
-    await schema.validate(body, { abortEarly: false });
+    await schema.validate(body);
     next();
   } catch (err) {
-    res.status(400).json(err.message);
+    next({ type: 'ValidationError', field: err.path });
   }
 };
 
