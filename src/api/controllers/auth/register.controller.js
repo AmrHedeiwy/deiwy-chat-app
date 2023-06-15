@@ -9,13 +9,14 @@ const userSchema = require('../../validations/user.validation');
  * 
  * @middleware validation(userSchema) - Validates user input.
  * @param {Object} req - The HTTP request object.
- * @param {Object} req.body - The request body containing user data.
- * @param {Object} req.body.Firstname - The user's first name.
- * @param {Object} req.body.Lastname - The user's last name.
- * @param {Object} req.body.Username - The user's username.
- * @param {Object} req.body.Email - The user's email address.
- * @param {Object} req.body.Password - The user's password.
- * 
+ * @param {string} req.body - The request body containing user data.
+ * @param {string} req.body.Firstname - The user's first name.
+ * @param {string} req.body.Lastname - The user's last name.
+ * @param {string} req.body.Username - The user's username.
+ * @param {string} req.body.Email - The user's email address.
+ * @param {string} req.body.Password - The user's password.
+ * @param {Object} res - The HTTP response object.
+ * @param {Function} next - The next middleware in the chain.
  * @returns {Object} An object containing information about the result
  * of the operation.
  * 
@@ -29,12 +30,12 @@ const userSchema = require('../../validations/user.validation');
     errors, or server errors.
  */
 exports.register = [
-  validation(userSchema),
+  //   validation(userSchema),
   async (req, res, next) => {
     const body = req.body;
 
     const { status, message, error } = await createUser(body);
-    if (error) next(error);
+    if (error) return next(error);
 
     res.status(status).json(message);
   }
