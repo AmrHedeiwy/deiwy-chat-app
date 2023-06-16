@@ -1,7 +1,7 @@
 /**
  * @module userSchema
  * This module defines the valitdations that execute when a
- * user enters their register credentials
+ * user enters their register credentials using Joi.
  *
  * @typedef {Object} user schema
  * @property {string} Firstname - The first name of the user. Must be
@@ -18,22 +18,24 @@
  * the set @$!%?&.
  */
 
-import { object, string } from 'yup';
+import Joi from 'joi';
 
-const userSchema = object({
-  Firstname: string()
-    .matches(/^[A-Za-z]{2,30}$/)
+const userSchema = Joi.object({
+  Firstname: Joi.string()
+    .pattern(/^[A-Za-z]{2,30}$/)
     .required(),
-  Lastname: string()
-    .matches(/^[A-Za-z]{2,30}$/)
+  Lastname: Joi.string()
+    .pattern(/^[A-Za-z]{2,30}$/)
     .required(),
-  Username: string()
-    .matches(/^[A-Za-z\d_-]{3,20}$/)
+  Username: Joi.string()
+    .pattern(/^[A-Za-z\d_-]{3,20}$/)
     .required(),
-  Email: string().email().required('error'),
-  Password: string().matches(
-    /^(?=.*[A-Z])(?=.*[a-z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/
-  )
+  Email: Joi.string().email().required(),
+  Password: Joi.string()
+    .pattern(
+      /^(?=.*[A-Z])(?=.*[a-z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/
+    )
+    .required()
 });
 
 export default userSchema;

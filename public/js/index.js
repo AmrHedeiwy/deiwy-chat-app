@@ -1,5 +1,6 @@
+import userSchema from './validations/user.validation.js';
+
 const socket = io();
-import userSchema from '/src/api/validations/user.validation.js';
 
 const loginForm = document.querySelector('#loginForm');
 const registerForm = document.querySelector('#registerForm');
@@ -55,14 +56,11 @@ registerForm.addEventListener('submit', (e) => {
     Lastname: formElements.registerLastname,
     Username: formElements.registerUsername,
     Email: formElements.registerEmail,
-    Password: formElements.registerPassword
+    Password: formElements.registerPassword,
+    RepeatPassword: formElements.registerRepeatPassword
   };
 
-  if (formElements.registerPassword !== formElements.registerRepeatPassword) {
-    return console.log('Password do not match');
-  }
-
-  requestToServer('/auth/register', 'POST', body);
+  // requestToServer('/auth/register', 'POST', body);
 });
 
 const requestToServer = async (url, method, body) => {
