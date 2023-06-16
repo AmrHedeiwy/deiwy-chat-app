@@ -18,27 +18,22 @@
  * the set @$!%?&.
  */
 
-const yup = require('yup');
+import { object, string } from 'yup';
 
-const userSchema = yup.object({
-  Firstname: yup
-    .string()
+const userSchema = object({
+  Firstname: string()
     .matches(/^[A-Za-z]{2,30}$/)
     .required(),
-  Lastname: yup
-    .string()
+  Lastname: string()
     .matches(/^[A-Za-z]{2,30}$/)
     .required(),
-  Username: yup
-    .string()
+  Username: string()
     .matches(/^[A-Za-z\d_-]{3,20}$/)
     .required(),
-  Email: yup.string().email().required('error'),
-  Password: yup
-    .string()
-    .matches(
-      /^(?=.*[A-Z])(?=.*[a-z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/
-    )
+  Email: string().email().required('error'),
+  Password: string().matches(
+    /^(?=.*[A-Z])(?=.*[a-z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/
+  )
 });
 
-module.exports = userSchema;
+export default userSchema;

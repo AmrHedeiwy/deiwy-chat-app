@@ -13,7 +13,7 @@
     "messages": {
       "Email": "Sorry, that email address is already in use. Please enter a different email address to create a new account."
     },
-    "code": 409
+    "code": 422
   },
   "server": {
     "message": "Oops, something went wrong while saving your data. Please try again later or contact support if the problem persists.",

@@ -1,71 +1,81 @@
-'use strict';
+import fs from 'fs';
+import path from 'path';
+import process from 'process';
+import { Sequelize } from 'sequelize';
 
-const fs = require('fs');
-const path = require('path');
-const Sequelize = require('sequelize');
-const process = require('process');
-const basename = path.basename(__filename);
 const env = process.env.NODE_ENV || 'development';
-const config = require('../../config/db-config.json')[env];
-const db = {};
+import fileData from '../../config/db-config.json' assert { type: 'json' };
+let config = fileData[env];
+let db = {};
 
-// Create a  Sequelize instance based on the configuration file
-let sequelize;
-if (config.use_env_variable) {
-  sequelize = new Sequelize(process.env[config.use_env_variable], config);
-} else {
-  sequelize = new Sequelize(
-    config.database,
-    config.username,
-    config.password,
-    config
-  );
-}
+const filePath = import.meta.url;
+const basename = path.basename(filePath);
+const dirName = path.dirname(filePath);
 
-// Load all Sequeilize model file in the `models` directory and add them to the `db` object
-fs.readdirSync(__dirname)
-  .filter((file) => {
-    return (
+// Create a Sequelize instance based on the configuration file
+const sequelize = new Sequelize(
+  config.database,
+  config.username,
+  config.password,
+  config.options
+);
+
+/**
+ * Load all the models from the `models` directory.
+ */
+async function loadModels() {
+  // Read the files in the `models` directory
+  const files = await fs.promises.readdir(dirName.replace('file:///', ''));
+  /**
+   * Filter and return the files based on the following conditions:
+   * - Does not start with `.`.
+   * @example .gitignore
+   * - Is not the basename, which is the name of the file we
+   * are importing from.
+   * @default index.js
+   * - End with `.js` extention
+   * @example user.model.js
+   * - It does not contain `.test.js`
+   * @example user.test.js
+   */
+  for (const file of files) {
+    if (
       file.indexOf('.') !== 0 &&
       file !== basename &&
       file.slice(-3) === '.js' &&
       file.indexOf('.test.js') === -1
-    );
-  })
-  .forEach((file) => {
-    const model = require(path.join(__dirname, file))(
-      sequelize,
-      Sequelize.DataTypes
-    );
-    db[model.name] = model;
+    ) {
+      // Import the model and pass the sequelize instance and sequelize data types.
+      const filePath = path.join(dirName, file);
+      const modelModule = await import(filePath);
+      const model = modelModule.default(sequelize, Sequelize.DataTypes);
 
-    // Load hooks for this model, if they exist
-    const hooksPath = path.join(
-      __dirname,
-      'hooks',
-      `${model.name.toLowerCase()}Hooks.js`
-    );
+      // load the model to db object
+      db[model.name] = model;
 
-    if (fs.existsSync(hooksPath)) {
-      const hooks = require(hooksPath);
-      hooks(model);
+      // Load the hooks for this model from the hooks directory `models/hooks`
+      const hooksPath = path.join(
+        path.dirname(filePath),
+        'hooks',
+        `${model.name.toLowerCase()}Hooks.js`
+      );
+      // Import the hooks and pass the model instance
+      const hooksModule = await import(hooksPath);
+
+      hooksModule.default(model);
     }
-  });
+  }
+}
 
-// Call the `associate`function for each model, if it exists
+await loadModels();
+
+// Call the `associate` function for each model, if it exists
 Object.keys(db).forEach((modelName) => {
   if (db[modelName].associate) {
     db[modelName].associate(db);
   }
 });
 
-/**
- * The `db` object contains Sequilze models for this application.
- * @typedef {Object} db
- * @property {Sequelize} sequelize - The Sequelize instance.
- * @property {Object.<string, Model>} - The sequelize models.
- */
-
 // Add the Sequelize instance to the `db` and export it
 db.sequelize = sequelize;
-module.exports = db;
+export default db;

@@ -1,6 +1,7 @@
-const { User } = require('../models/index');
-const successMessages = require('../../config/success.json');
+import db from '../models/index.js';
+import successMessages from '../../config/success.json' assert { type: 'json' };
 
+const User = db.User;
 /**
  * Creates a new user using the user's register credentials.
  * @param {Object} data - Contains the user's data.
@@ -42,6 +43,4 @@ const createUser = async (data) => {
   }
 };
 
-module.exports = {
-  createUser
-};
+export { createUser };

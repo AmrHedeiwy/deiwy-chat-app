@@ -1,4 +1,4 @@
-const { Model } = require('sequelize');
+import { Model } from 'sequelize';
 
 /**
  * Defines the User model.
@@ -7,7 +7,7 @@ const { Model } = require('sequelize');
  * @param {import('sequelize').DataTypes} DataTypes - The data types module.
  * @returns {User} The initalized model.
  */
-module.exports = (sequelize, DataTypes) => {
+export default (sequelize, DataTypes) => {
   /**
  * @class User
  * @classdesc A Sequelize model representing a user.

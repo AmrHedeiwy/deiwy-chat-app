@@ -57,7 +57,10 @@ registerForm.addEventListener('submit', (e) => {
     Password: formElements.registerPassword
   };
 
-  console.log(body.Password);
+  if (formElements.registerPassword !== formElements.registerRepeatPassword) {
+    return console.log('Password do not match');
+  }
+
   requestToServer('/auth/register', 'POST', body);
 });
 
