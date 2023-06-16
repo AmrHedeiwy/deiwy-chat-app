@@ -1,6 +1,6 @@
-const { createUser } = require('../../services/user.service');
-const validation = require('../../middlewares/validation.middleware');
-const userSchema = require('../../validations/user.validation');
+import { createUser } from '../../services/user.service.js';
+import validation from '../../middlewares/validation.middleware.js';
+import userSchema from '../../validations/user.validation.js';
 
 /**
  * @function register
@@ -29,8 +29,8 @@ const userSchema = require('../../validations/user.validation');
     information about the error, such as validation errors, constraint
     errors, or server errors.
  */
-exports.register = [
-  //   validation(userSchema),
+const register = [
+  validation(userSchema),
   async (req, res, next) => {
     const body = req.body;
 
@@ -40,3 +40,7 @@ exports.register = [
     res.status(status).json(message);
   }
 ];
+
+export default {
+  register
+};

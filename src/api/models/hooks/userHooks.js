@@ -3,10 +3,10 @@
   before and after calls to the database are executed.
  * @module hooks
 */
-const { v4: uuidv4 } = require('uuid');
-const bcrypt = require('bcrypt');
+import { v4 as uuidv4 } from 'uuid';
+import bcrypt from 'bcrypt';
 
-module.exports = (User) => {
+export default (User) => {
   /**
    * Generates a unique user key based on the user's username
    * and a 4-digit UUID.

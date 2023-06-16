@@ -16,6 +16,7 @@
  * an approptiate error message.
  */
 const validation = (schema) => async (req, res, next) => {
+  console.log('sssssssssss');
   const body = req.body;
   try {
     await schema.validate(body);
@@ -25,4 +26,4 @@ const validation = (schema) => async (req, res, next) => {
   }
 };
 
-module.exports = validation;
+export default validation;
