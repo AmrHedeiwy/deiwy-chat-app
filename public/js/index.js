@@ -1,4 +1,5 @@
 const socket = io();
+import userSchema from '/src/api/validations/user.validation.js';
 
 const loginForm = document.querySelector('#loginForm');
 const registerForm = document.querySelector('#registerForm');
